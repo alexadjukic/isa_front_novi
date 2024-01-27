@@ -8,7 +8,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jwtToken");
 
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token) config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, '')}`;
 
     return config;
   },

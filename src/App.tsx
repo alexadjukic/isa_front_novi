@@ -1,5 +1,6 @@
 import './App.css';
 import ResponsiveAppBar from './components/ResponsiveAppBar/ResponsiveAppBar';
+import CompanyListFilter from './pages/CompanyListFilter/CompanyListFilter';
 import LogInForm from './pages/LogInForm/LogInForm';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 
@@ -11,7 +12,7 @@ function App() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<Link to="/login">Home page</Link>}
+                        element={<CompanyListFilter />}
                     />
                     <Route path="/login" element={<LogInForm />} />
                 </Routes>
