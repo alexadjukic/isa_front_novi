@@ -5,7 +5,7 @@ type HomeProps = {
   radius: number;
 };
 
-export default function Home({ radius }: HomeProps) {
+export default function Test({ radius }: HomeProps) {
   const [test, setTest] = useState(true);
 
   useEffect(() => {
