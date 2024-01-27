@@ -10,6 +10,8 @@ import {
 } from '../../model/authentication';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { getUser } from '../../services/authorizationService';
+import { UserRole } from '../../model/user';
 
 export default function LogInForm() {
     const navigate = useNavigate();
@@ -28,7 +30,11 @@ export default function LogInForm() {
     const logInMutation = useMutation(logIn, {
         onSuccess: (data: AxiosResponse<AuthenticationResponse>) => {
             setToken(data.data.token);
-            navigate('/');
+            const user = getUser(data.data.token);
+            if (user.role == UserRole.USER)
+                navigate('/home');
+            else
+                navigate('/')
         },
         onError: () => {
             setAreCredentialsInvalid(true);

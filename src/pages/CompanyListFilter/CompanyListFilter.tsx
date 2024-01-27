@@ -5,11 +5,14 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Button,
     List,
     ListItem,
     ListItemText,
     SelectChangeEvent,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormLabel
 } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -23,10 +26,11 @@ export default function CompanyListFilter() {
     const [searchAddressInput, setSearchAddressInput] = useState<string>('');
     const [searchedCompanies, setSearchedCompanies] = useState<Company[]>([]);
     const [selectedRating, setSelectedRating] = useState<string>('0');
+    const [sortBy, setSortBy] = useState<string>('name');
 
     const companiesQuery = useQuery(
-        ['companies', { prefix: 'a', address: 'a' }],
-        () => searchCompanies('a', 'a'),
+        ['companies', { prefix: searchNameInput, address: '' }],
+        () => searchCompanies(searchNameInput, ''),
         {
             onSuccess: (data: AxiosResponse<Company[]>) => {
                 setSearchedCompanies(data.data);
@@ -47,24 +51,40 @@ export default function CompanyListFilter() {
     };
 
     const handleSelectChange = (event: SelectChangeEvent<string>): void => {
+        const newRating = event.target.value;
         setSelectedRating(event.target.value);
         setSearchedCompanies(
-            selectedRating === '0'
+            newRating === '0'
                 ? searchedCompanies
                 : searchedCompanies.filter(
                       company =>
-                          company.rating >= Number(selectedRating) &&
-                          company.rating < Number(selectedRating) + 1,
+                          company.rating >= Number(newRating) &&
+                          company.rating < Number(newRating) + 1,
                   ),
         );
-        setSelectedRating(selectedRating);
-    };
-
-    const handleSearch = () => {
-        companiesQuery.refetch();
     };
 
     if (companiesQuery.isError) return <div>Error fetching companies</div>;
+
+    const handleSortByChange = (event: SelectChangeEvent<string>) => {
+        setSortBy(event.target.value);
+        const sortBy = event.target.value;
+
+        const sortedCompanies = [...searchedCompanies];
+
+        sortedCompanies.sort((a, b) => {
+            if (sortBy === 'name') {
+                return a.companyName.localeCompare(b.companyName);
+            }
+            else if (sortBy === 'rating') {
+                return b.rating - a.rating;
+            }
+
+            return 0;
+        });
+
+        setSearchedCompanies(sortedCompanies);
+    }
 
     return (
         <Box p={3}>
@@ -113,13 +133,20 @@ export default function CompanyListFilter() {
                     <MenuItem value="1">1 stars</MenuItem>
                 </Select>
             </FormControl>
-            <Button
-                style={{ marginTop: '10px' }}
-                variant="contained"
-                color="primary"
-                onClick={handleSearch}>
-                Search
-            </Button>
+            <FormControl>
+                <FormLabel id="demo-row-radio-buttons-group-label">Sort by:</FormLabel>
+                <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    value={sortBy}
+                    onChange={handleSortByChange}
+                >
+                    <FormControlLabel value="name" control={<Radio />} label="Name" />
+                    <FormControlLabel value="city" control={<Radio />} label="City" />
+                    <FormControlLabel value="rating" control={<Radio />} label="Rating" />
+                </RadioGroup>
+            </FormControl>
             <Box mt={3}>
                 <h2>Company List</h2>
                 <List>

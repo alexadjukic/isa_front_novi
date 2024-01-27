@@ -1,12 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import classes from "./Home.module.css";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
-type HomeProps = {
-  radius: number;
-};
-
-export default function Home({ radius }: HomeProps) {
-  const [test, setTest] = useState(true);
+export default function Home() {
 
   useEffect(() => {
     console.log("OnInit");
@@ -14,22 +9,14 @@ export default function Home({ radius }: HomeProps) {
     return () => {
       console.log("OnDestroy");
     };
-  }, [test]);
-
-  const value = useMemo(() => {
-    console.log("izracunao vrednost");
-    return 3.14 * radius * radius;
-  }, [radius]);
+  });
 
   return (
-    <>
-      <div
-        className={`${classes.testClass}`}
-        onClick={() => setTest((test) => !test)}
-      >
-        Home
+    <><div>
+        <Link to={`/`}>Company list</Link>
+        <br></br>
+        <Link to={`/scheduled-appointments`}>Scheduled appointments</Link>
       </div>
-      <div>{value}</div>
     </>
   );
 }
