@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
@@ -6,14 +6,6 @@ import CompanyList from '../../components/CompanyList/CompanyList';
 
 export default function Home() {
     const userContext = useContext(UserContext);
-
-    useEffect(() => {
-        console.log('OnInit');
-
-        return () => {
-            console.log('OnDestroy');
-        };
-    });
 
     if (userContext.user.role == UserRole.USER)
         return (
@@ -25,13 +17,9 @@ export default function Home() {
                         Scheduled appointments
                     </Link>
                     <br></br>
-                    <Link to={`/qr-codes`}>
-                        QR code confirmations
-                    </Link>
+                    <Link to={`/qr-codes`}>QR code confirmations</Link>
                     <br></br>
-                    <Link to={`/profile`}>
-                        My profile
-                    </Link>
+                    <Link to={`/profile`}>My profile</Link>
                 </div>
             </>
         );

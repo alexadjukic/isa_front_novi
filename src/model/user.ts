@@ -13,6 +13,7 @@ export type UserDetails = User & {
     phoneNumber: string,
     profession: string,
     companyId: number,
+    penaltyPoints: number,
 };
 
 export enum UserRole {

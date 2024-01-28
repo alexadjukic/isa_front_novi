@@ -16,3 +16,7 @@ export function getAppointmentsByCompanyId(companyId: number){
 export function getAppointmentsByUserId(userId: number): Promise<AxiosResponse<Appointment[]>> {
     return api.get<Appointment[]>(`appointments/byUserId/` + userId);
 }
+
+export function cancelAppointment({ appointmentId, userId }: { appointmentId: number, userId: number }): Promise<AxiosResponse<string>> {
+    return api.delete(`appointments/${appointmentId}/${userId}`);
+}
