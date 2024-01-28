@@ -32,6 +32,7 @@ export default function UserProfile() {
         profession: '',
         role: UserRole.UNAUTHENTICATED,
         companyId: 0,
+        penaltyPoints: 0
     });
     const [address, setAddress] = useState<string>('');
     const userContext = useContext(UserContext);
