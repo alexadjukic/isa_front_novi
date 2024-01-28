@@ -1,11 +1,7 @@
-import api from "../lib/axios";
+import { AxiosResponse } from "axios";
 import { Address } from "../model/address";
+import api from "../lib/axios";
 
-export function getAddressById(id: number){
-    try{
-        return api.get<Address>('address/' + id)
-    } catch(error){
-        console.error('Greška prilikom dobijanja adrese:', error);
-        throw error;
-    }
+export function getAddressById(addressId: number): Promise<AxiosResponse<Address>> {
+    return api.get<Address>(`address/${addressId}`);
 }

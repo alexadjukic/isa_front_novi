@@ -1,35 +1,31 @@
-import { useEffect, useMemo, useState } from "react";
-import classes from "./Home.module.css";
+import { useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { UserContext } from '../../App';
+import { UserRole } from '../../model/user';
+import CompanyList from '../../components/CompanyList/CompanyList';
 
-type HomeProps = {
-  radius: number;
-};
+export default function Home() {
+    const userContext = useContext(UserContext);
 
-export default function Home({ radius }: HomeProps) {
-  const [test, setTest] = useState(true);
+    useEffect(() => {
+        console.log('OnInit');
 
-  useEffect(() => {
-    console.log("OnInit");
+        return () => {
+            console.log('OnDestroy');
+        };
+    });
 
-    return () => {
-      console.log("OnDestroy");
-    };
-  }, [test]);
-
-  const value = useMemo(() => {
-    console.log("izracunao vrednost");
-    return 3.14 * radius * radius;
-  }, [radius]);
-
-  return (
-    <>
-      <div
-        className={`${classes.testClass}`}
-        onClick={() => setTest((test) => !test)}
-      >
-        Home
-      </div>
-      <div>{value}</div>
-    </>
-  );
+    if (userContext.user.role == UserRole.USER)
+        return (
+            <>
+                <div>
+                    <Link to={`/company-list`}>Company list</Link>
+                    <br></br>
+                    <Link to={`/scheduled-appointments`}>
+                        Scheduled appointments
+                    </Link>
+                </div>
+            </>
+        );
+    else return <CompanyList />;
 }

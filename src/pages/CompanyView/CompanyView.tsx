@@ -277,7 +277,7 @@ export default function CompanyView() {
                                     {/* {appointment.adminName} {appointment.adminLastname} */}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Appointment opening time: {format(appointment.dateTime, 'yyyy-MM-dd HH:mm')}
+                                        Appointment opening time: {format(appointment.dateTime, 'dd.MM.yyyy. HH:mm')}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
                                         Status: {appointment.status}
