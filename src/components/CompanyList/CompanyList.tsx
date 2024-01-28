@@ -79,6 +79,9 @@ export default function CompanyList() {
             else if (sortBy === 'rating') {
                 return b.rating - a.rating;
             }
+            else if (sortBy === 'city') {
+                return a.address.city.localeCompare(b.address.city);
+            }
 
             return 0;
         });
@@ -159,7 +162,7 @@ export default function CompanyList() {
                                     primary={
                                         <strong>{company.companyName}</strong>
                                     }
-                                    secondary={`Address: ${company.addressId} | Rating: ${company.rating}`}
+                                    secondary={`Address: ${company.address.street} ${company.address.streetNumber}, ${company.address.city}, ${company.address.country} | Rating: ${company.rating}`}
                                 />
                             </ListItem>
                         </Link>

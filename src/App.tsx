@@ -11,6 +11,7 @@ import ScheduledAppointments from './pages/ScheduledAppointments/ScheduledAppoin
 import CompanyList from './components/CompanyList/CompanyList';
 import CompanyView from './pages/CompanyView/CompanyView';
 import EquipmentForm from './pages/EquipmentForm/EquipmentForm';
+import QRCodes from './pages/QRCodes/QRCodes';
 
 type UserContextType = {
     user: User,
@@ -54,6 +55,7 @@ function App() {
                         <Route path="/scheduled-appointments" element={<ScheduledAppointments />} />
                         <Route path="/company/:id" element={<CompanyView/>} />
                         <Route path="/editEquipment/:id" element={<EquipmentForm/>} />
+                        <Route path="/qr-codes" element={<QRCodes/>} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

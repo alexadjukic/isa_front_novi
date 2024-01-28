@@ -32,6 +32,7 @@ export default function UserProfile() {
         profession: '',
         role: UserRole.UNAUTHENTICATED,
         companyId: 0,
+        penaltyPoints: 0
     });
     const [address, setAddress] = useState<string>('');
     const userContext = useContext(UserContext);
@@ -191,6 +192,20 @@ export default function UserProfile() {
                             value={user.profession}
                             onChange={handleInputChange}
                             required
+                        />
+                    </FormControl>
+                </Box>
+
+                <Box className={`${classes.boxContainer}`}>
+                    <FormControl>
+                        <InputLabel htmlFor="profession">Penalty points</InputLabel>
+                        <Input
+                            id="profession"
+                            aria-describedby="my-helper-text"
+                            value={user.penaltyPoints}
+                            onChange={handleInputChange}
+                            required
+                            disabled
                         />
                     </FormControl>
                 </Box>
