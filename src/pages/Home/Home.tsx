@@ -24,6 +24,14 @@ export default function Home() {
                     <Link to={`/scheduled-appointments`}>
                         Scheduled appointments
                     </Link>
+                    <br></br>
+                    <Link to={`/qr-codes`}>
+                        QR code confirmations
+                    </Link>
+                    <br></br>
+                    <Link to={`/profile`}>
+                        My profile
+                    </Link>
                 </div>
             </>
         );
