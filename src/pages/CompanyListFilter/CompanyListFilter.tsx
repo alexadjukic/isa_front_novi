@@ -132,7 +132,7 @@ export default function CompanyListFilter() {
                                     primary={
                                         <strong>{company.companyName}</strong>
                                     }
-                                    secondary={`Address: ${company.address} | Rating: ${company.rating}`}
+                                    // secondary={`Address: ${company.address} | Rating: ${company.rating}`}
                                 />
                             </ListItem>
                         </Link>

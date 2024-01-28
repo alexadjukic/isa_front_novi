@@ -81,6 +81,7 @@ function ResponsiveAppBar() {
                 break;
             case 'LogOut':
                 removeToken();
+                navigate('/');
         }
         setAnchorElUser(null);
     };
