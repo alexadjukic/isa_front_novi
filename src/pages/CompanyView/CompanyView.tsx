@@ -132,12 +132,15 @@ export default function CompanyView() {
             getAppointments.refetch();
         }
     })
-    
+
     function reserveAppointment(ap: Appointment): void {
         ap.userId = user.id;
         ap.reserved = true;
         ap.equipmentList = selectedEquipment;
-
+        if (userDetails.penaltyPoints >= 3) {
+            alert('You cannot make an appointment because you have more than 2 penalty points');
+            return;
+        }
         appointmentMutation.mutate(ap);
         ap.equipmentList.forEach(e => {
             e.appointmentId = ap.id;
@@ -151,7 +154,6 @@ export default function CompanyView() {
             <Grid container spacing={2} className={`${classes.gridContainer}`}>
                 <Grid item xs={12} sm={3} className={`${classes.gridItem1}`}>
                     <p className={`${classes.companyDescription}`}>{company.description}</p>
-                    <p>{administrators?.length}</p>
                     {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                         <Link to={`/editCompanyAdminProfile/${userDetails.id}`}>
                             <Button className={`${classes.editCompanyButton}`} size="large" variant="contained">
