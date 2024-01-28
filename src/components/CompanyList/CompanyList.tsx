@@ -159,7 +159,7 @@ export default function CompanyList() {
                                     primary={
                                         <strong>{company.companyName}</strong>
                                     }
-                                    // secondary={`Address: ${company.address} | Rating: ${company.rating}`}
+                                    secondary={`Address: ${company.addressId} | Rating: ${company.rating}`}
                                 />
                             </ListItem>
                         </Link>

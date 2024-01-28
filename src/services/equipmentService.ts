@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import api from "../lib/axios";
 import { Equipment } from "../model/equipment";
 
@@ -11,11 +12,16 @@ export function getAllEquipmentByCompanyId(companyId: number){
     }
 }
 
-export function deleteEquipmentById(id: number){
-    try{
-        api.delete('equipment/' + id);
-    } catch(error){
-        console.error('Greška prilikom brisanja opreme:', error);
-        throw error;
-    }
+export async function deleteEquipmentById(id: number): Promise<void>{
+    await api.delete('equipment/' + id);
+}
+
+export function getEquipmentById(id: number): Promise<AxiosResponse<Equipment>>{
+    return api.get<Equipment>(`equipment/` + id);
+}
+
+export function updateEquipment(
+    equipment: Equipment,
+): Promise<AxiosResponse<Equipment>> {
+    return api.put<Equipment>('equipment', equipment);
 }

@@ -10,6 +10,7 @@ import { getUser } from './services/authorizationService';
 import ScheduledAppointments from './pages/ScheduledAppointments/ScheduledAppointments';
 import CompanyList from './components/CompanyList/CompanyList';
 import CompanyView from './pages/CompanyView/CompanyView';
+import EquipmentForm from './pages/EquipmentForm/EquipmentForm';
 
 type UserContextType = {
     user: User,
@@ -52,6 +53,7 @@ function App() {
                         <Route path="/company-list" element={<CompanyList />} />
                         <Route path="/scheduled-appointments" element={<ScheduledAppointments />} />
                         <Route path="/company/:id" element={<CompanyView/>} />
+                        <Route path="/editEquipment/:id" element={<EquipmentForm/>} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>
