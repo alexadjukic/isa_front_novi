@@ -28,6 +28,7 @@ export default function EquipmentForm() {
         profession: '',
         role: UserRole.UNAUTHENTICATED,
         companyId: 0,
+        penaltyPoints: 0
     });
 
     const equipmentMutation = useMutation(updateEquipment, {

@@ -23,8 +23,8 @@ export default function CompanyView() {
     // const navigate = useNavigate();
     const { getItem: getToken } = useLocalStorage('jwtToken');
     const [ user ] = useState<User>(getUser(getToken()));
-    const [ userDetails, setUserDetails ] = useState<UserDetails>({id: 0, username: '', role: UserRole.UNAUTHENTICATED, email: '', password: '', firstName: '', lastName: '', addressId: 0, phoneNumber: '', profession: '', companyId: 0});
-    const [company, setCompany] = useState<Company>({id: 0, companyName: '', addressId: 0, description: '', rating: 0.0});
+    const [ userDetails, setUserDetails ] = useState<UserDetails>({id: 0, username: '', role: UserRole.UNAUTHENTICATED, email: '', password: '', firstName: '', lastName: '', addressId: 0, phoneNumber: '', profession: '', companyId: 0, penaltyPoints: 0});
+    const [company, setCompany] = useState<Company>({id: 0, companyName: '', addressId: 0, description: '', rating: 0.0, address: {id: 0, country: '', city: '', street: '', streetNumber: 0, latitude: 0.0, longitude: 0.0}});
     const [administrators, setAdministrators] = useState<UserDetails[]>();
     const [equipment, setEquipment] = useState<Equipment[]>();
     const [appointments, setAppointments] = useState<Appointment[]>();
