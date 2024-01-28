@@ -9,7 +9,7 @@ export type UserDetails = User & {
     password: string,
     firstName: string,
     lastName: string,
-    address: string,
+    addressId: number,
     phoneNumber: string,
     profession: string,
     companyId: number,
