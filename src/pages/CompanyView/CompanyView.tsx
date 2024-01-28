@@ -5,12 +5,12 @@ import classes from './CompanyView.module.css';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useEffect, useState } from 'react';
 import { getAdministratorsByCompanyId, getUser, getUserDetails } from '../../services/authorizationService';
-import { User, UserDetails } from '../../model/user';
+import { User, UserDetails, UserRole } from '../../model/user';
 import { useMutation, useQuery } from 'react-query';
 import { AxiosResponse } from 'axios';
 import { Company } from '../../model/company';
 import { getCompanyById } from '../../services/companyService';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Equipment } from '../../model/equipment';
 import { addEquipmentToAppointment, deleteEquipmentById, getAllEquipmentByCompanyId } from '../../services/equipmentService';
 import { Appointment } from '../../model/appointment';
@@ -24,15 +24,16 @@ export default function CompanyView() {
     // const navigate = useNavigate();
     const { getItem: getToken } = useLocalStorage('jwtToken');
     const [ user ] = useState<User>(getUser(getToken()));
-    const [ userDetails, setUserDetails ] = useState<UserDetails>();
-    const [company, setCompany] = useState<Company>();
+    const [ userDetails, setUserDetails ] = useState<UserDetails>({id: 0, username: '', role: UserRole.UNAUTHENTICATED, email: '', password: '', firstName: '', lastName: '', addressId: 0, phoneNumber: '', profession: '', companyId: 0, penaltyPoints: 0});
+    const [company, setCompany] = useState<Company>({id: 0, companyName: '', addressId: 0, description: '', rating: 0.0, address: {id: 0, country: '', city: '', street: '', streetNumber: 0, latitude: 0.0, longitude: 0.0}});
     const [administrators, setAdministrators] = useState<UserDetails[]>();
     const [equipment, setEquipment] = useState<Equipment[]>();
     const [appointments, setAppointments] = useState<Appointment[]>();
-    const [address, setAddress] = useState<Address>();
+    const [address, setAddress] = useState<Address>({id: 0, country: '', city: '', street: '', streetNumber: 0, latitude: 0.0, longitude: 0.0});
     const [equipForDelId, setEquipForDelId] = useState<number>(0);
     const [selectedEquipment, setSelectedEquipment] = useState<Equipment[]>([]);
 
+    const params = useParams();
 
     const getLoggedUser = useQuery(
         ['users',  user.id],
@@ -44,82 +45,77 @@ export default function CompanyView() {
             enabled: user ? true : false
         }
     );
-
+        
     const getCompanyByUser = useQuery(
-        ['companies', userDetails?.companyId],
-        () => getCompanyById(userDetails.companyId),
+        ['companies', params.id],
+        () => getCompanyById(params.id),
         {
             onSuccess: (data: AxiosResponse<Company>) => {
                 setCompany(data.data);
             },
-            enabled: userDetails ? true : false,
+            enabled: userDetails.id !== 0
         }
     );
 
     const getAdministrators = useQuery(
-        ['users/byCompanyId', company?.id],
+        ['users/byCompanyId', company.id],
         () => getAdministratorsByCompanyId(company.id), 
         {
             onSuccess: (data: AxiosResponse<UserDetails[]>) => {
                 setAdministrators(data.data);
             },
-            enabled: company ? true : false,
+            enabled: company.id !== 0
         }
     );
 
     const getEquipment = useQuery(
-        ['equipment/byCompanyId', company?.id],
+        ['equipment/byCompanyId', company.id],
         () => getAllEquipmentByCompanyId(company.id),
         {
             onSuccess: (data: AxiosResponse<Equipment[]>) => {
                 setEquipment(data.data);
             },
-            enabled: company ? true : false
+            enabled: company.id !== 0
         }
     );
 
     const getAppointments = useQuery(
-        ['appointments/byCompanyId', company?.id],
+        ['appointments/byCompanyId', company.id],
         () => getAppointmentsByCompanyId(company.id),
         {
             onSuccess: (data: AxiosResponse<Appointment[]>) => {
                 setAppointments(data.data);
             },
-            enabled: company ? true : false
+            enabled: company.id !== 0
         }
     );
 
     const getAddress = useQuery(
-        ['address', company?.addressId],
+        ['address', company.addressId],
         () => getAddressById(company.addressId),
         {
             onSuccess: (data: AxiosResponse<Address>) => {
                 setAddress(data.data);
             },
-            enabled: company ? true : false
+            enabled: company.id !== 0
         }
     );
 
-    const deleteEquipment = useQuery(
-        ['equipment/delete', equipForDelId],
-        () => deleteEquipmentById(equipForDelId),
-        {
-            onSuccess: () => {
-                setEquipForDelId(0);
-                getEquipment.refetch();
-                getAppointments.refetch();
-            },
-            enabled: (equipForDelId !== 0) ? true : false
+    const deleteEquipmentMutation = useMutation(deleteEquipmentById, {
+        onSuccess: () => {
+            getEquipment.refetch();
+            getAppointments.refetch();
         }
-    );
+    });
 
     function setEquipForDel(id: number): void {
         setEquipForDelId(id);
+        deleteEquipmentMutation.mutate(id)
     }
 
     useEffect(() => {
-        getLoggedUser.refetch();
-    },[user, userDetails, equipForDelId, company])
+        // getLoggedUser.refetch();
+    },[user, userDetails, equipForDelId, company, getLoggedUser])
     
     function selectEquipment(eq: Equipment): void {
         setSelectedEquipment([...selectedEquipment, eq]);
@@ -154,10 +150,10 @@ export default function CompanyView() {
         <div className={`${classes.container}`}>
             <Grid container spacing={2} className={`${classes.gridContainer}`}>
                 <Grid item xs={12} sm={3} className={`${classes.gridItem1}`}>
-                    <p className={`${classes.companyDescription}`}>{company?.description}</p>
+                    <p className={`${classes.companyDescription}`}>{company.description}</p>
                     <p>{administrators?.length}</p>
-                    {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
-                        <Link to={`/editCompanyAdminProfile/${userDetails?.id}`}>
+                    {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
+                        <Link to={`/editCompanyAdminProfile/${userDetails.id}`}>
                             <Button className={`${classes.editCompanyButton}`} size="large" variant="contained">
                                 Edit Profile
                             </Button>
@@ -168,17 +164,17 @@ export default function CompanyView() {
                 </Grid>
 
                 <Grid item xs={12} sm={6} className={`${classes.gridItem2}`}>
-                    <Typography className={`${classes.companyName}`} fontSize="95px" fontWeight="bold" variant="h4">{company?.companyName}</Typography>
-                     <p className={`${classes.companyAddress}`}>{address?.street} {address?.streetNumber}</p>
-                     <p className={`${classes.companyAddress}`}>{address?.city}, {address?.country}</p>
-                     <p className={`${classes.companyAddress}`}>Latitude: {address?.latitude}</p>
-                     <p className={`${classes.companyAddress}`}>Longitude: {address?.longitude}</p>
+                    <Typography className={`${classes.companyName}`} fontSize="95px" fontWeight="bold" variant="h4">{company.companyName}</Typography>
+                     <p className={`${classes.companyAddress}`}>{address.street} {address.streetNumber}</p>
+                     <p className={`${classes.companyAddress}`}>{address.city}, {address.country}</p>
+                     <p className={`${classes.companyAddress}`}>Latitude: {address.latitude}</p>
+                     <p className={`${classes.companyAddress}`}>Longitude: {address.longitude}</p>
                 </Grid>
 
                 <Grid item xs={12} sm={3} className="gridItem3">
-                    <p className={`${classes.companyRating}`}>{company?.rating}</p>
-                    {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
-                        <Link to={`/editCompany/${userDetails?.companyId}`}>
+                    <p className={`${classes.companyRating}`}>{company.rating}</p>
+                    {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
+                        <Link to={`/editCompany/${userDetails.companyId}`}>
                             <Button className={`${classes.editCompanyButton}`} size="large" variant="contained">
                                 Edit Company
                             </Button>
@@ -189,7 +185,7 @@ export default function CompanyView() {
                 </Grid>
             </Grid>
 
-            {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
+            {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                 <TableContainer sx={{ marginTop: 5}} component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead sx={{ backgroundColor:"wheat"}}>
@@ -231,8 +227,8 @@ export default function CompanyView() {
                     {/* Prva kolona - prva polovina */}
                     <Grid item xs={12} sm={6} className={`${classes.secondGridItem1}`}>
                         <h1>Equipment</h1> 
-                        {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
-                            <Link to={`/createEquipment/${userDetails?.companyId}`}>
+                        {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
+                            <Link to={`/createEquipment/${userDetails.companyId}`}>
                                 <Button variant="contained" size="small">Create Equipment</Button>
                             </Link>
                         ) : (
@@ -265,7 +261,7 @@ export default function CompanyView() {
                                         </Typography>
                                     </div>
                                 </CardContent>
-                                {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
+                                {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                                 <CardActions>
                                     <Link to={`/editEquipment/${equip.id}`}>
                                         <Button variant="contained" size="small">Edit</Button>
@@ -293,8 +289,8 @@ export default function CompanyView() {
                     <Grid item xs={12} sm={6} className={`${classes.secondGridItem2}`}>
                         {/* Sadržaj za drugu polovinu grida */}
                         <h1>Appointments:</h1>
-                        {(userDetails?.role.toString() === 'COMPANY_ADMIN' && company?.id === userDetails?.companyId) ? (
-                            <Link to={`/createAppointment/${company?.id}`}>
+                        {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
+                            <Link to={`/createAppointment/${company.id}`}>
                                 <Button variant="contained" size="small">Create Appointment</Button>
                             </Link>
                         ) : (
@@ -318,7 +314,7 @@ export default function CompanyView() {
                                         Status: {appointment.status}
                                     </Typography>
                                 </CardContent>
-                                {userDetails?.role.toString() === 'USER' ? (
+                                {userDetails.role.toString() === 'USER' ? (
                                     <CardActions>
                                         {appointment.reserved === false ? (
                                             <Button onClick={() => reserveAppointment(appointment)} variant="contained" size="small" disabled={selectedEquipment.length === 0}>Reserve</Button>

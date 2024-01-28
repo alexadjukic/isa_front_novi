@@ -20,3 +20,7 @@ export function getAppointmentsByUserId(userId: number): Promise<AxiosResponse<A
 export function updateAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
     return api.put<Appointment>(`appointments`, appointment);
 }
+
+export function cancelAppointment({ appointmentId, userId }: { appointmentId: number, userId: number }): Promise<AxiosResponse<string>> {
+    return api.delete(`appointments/${appointmentId}/${userId}`);
+}
