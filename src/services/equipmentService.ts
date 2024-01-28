@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import api from "../lib/axios";
 import { Equipment } from "../model/equipment";
 
@@ -18,4 +19,8 @@ export function deleteEquipmentById(id: number){
         console.error('Greška prilikom brisanja opreme:', error);
         throw error;
     }
+}
+
+export function addEquipmentToAppointment(eq: Equipment): Promise<AxiosResponse<Equipment>> {
+    return api.put<Equipment>(`equipment/addToAppointment`, eq);
 }

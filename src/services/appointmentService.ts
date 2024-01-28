@@ -16,3 +16,7 @@ export function getAppointmentsByCompanyId(companyId: number){
 export function getAppointmentsByUserId(userId: number): Promise<AxiosResponse<Appointment[]>> {
     return api.get<Appointment[]>(`appointments/byUserId/` + userId);
 }
+
+export function updateAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments`, appointment);
+}
