@@ -13,11 +13,10 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { getUser } from '../../services/authorizationService';
 import { UserRole } from '../../model/user';
-
+import { UserContext } from '../../App';
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -26,39 +25,33 @@ function ResponsiveAppBar() {
     const [pages, setPages] = useState<string[]>([]);
     const [settings, setSettings] = useState<string[]>([]);
 
-    const { getItem: getToken, removeItem: removeToken } =
-        useLocalStorage('jwtToken');
-
-    const [prevToken, setPrevToken] = useState<null | string>(null);
+    const { removeItem: removeToken } = useLocalStorage('jwtToken');
+    const userContext = useContext(UserContext);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const currentToken = getToken();
-
-        if (currentToken !== prevToken) {
-            if (currentToken) {
-                setSettings(['LogOut']);
-            } else {
+        switch (userContext.user.role) {
+            case UserRole.USER:
+                setSettings(['Profile', 'LogOut']);
+                setPages(['Logged in']);
+                break;
+            case UserRole.COMPANY_ADMIN:
+                setSettings(['Profile', 'LogOut']);
+                setPages(['Logged in']);
+                break;
+            case UserRole.SYSTEM_ADMIN:
+                setSettings(['Profile', 'LogOut']);
+                setPages(['Logged in']);
+                break;
+            case UserRole.UNAUTHENTICATED:
                 setSettings(['LogIn', 'Register']);
-            }
-
-            const user = getUser(currentToken);
-            switch (user.role) {
-                case UserRole.USER:
-                    setPages(['Logged in']);
-                    break;
-                case UserRole.COMPANY_ADMIN:
-                case UserRole.SYSTEM_ADMIN:
-                case UserRole.UNAUTHENTICATED:
-                    setPages(['Unauthorized']);
-                // to-do: ovde dodate dugmice koje zelite da vam se prikazuju u odnosu na to koji je korisnik ulogovan
-                // dugme automatski rutira na stranicu koja ima isti naziv kao i dugme samo malim slovima i "-" umesto razmaka (Emergency Appointments => /emergency-appointments)
-            }
-
-            setPrevToken(currentToken);
+                setPages(['Unauthorized']);
+                break;
+            // to-do: ovde dodate dugmice koje zelite da vam se prikazuju u odnosu na to koji je korisnik ulogovan
+            // dugme automatski rutira na stranicu koja ima isti naziv kao i dugme samo malim slovima i "-" umesto razmaka (Emergency Appointments => /emergency-appointments)
         }
-    }, [getToken, prevToken]);
+    }, [userContext]);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -81,6 +74,11 @@ function ResponsiveAppBar() {
                 break;
             case 'LogOut':
                 removeToken();
+                userContext.dispatch({ type: 'LogOut' });
+                navigate('/');
+                break;
+            case 'Profile':
+                navigate('/profile');
         }
         setAnchorElUser(null);
     };

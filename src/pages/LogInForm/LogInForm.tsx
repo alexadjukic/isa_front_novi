@@ -1,5 +1,5 @@
 import { Button, FormControl, TextField, Typography } from '@mui/material';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import classes from './LogInForm.module.css';
 import { useMutation } from 'react-query';
 import { logIn } from '../../services/authorizationService';
@@ -10,11 +10,13 @@ import {
 } from '../../model/authentication';
 import { useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { UserContext } from '../../App';
 
 export default function LogInForm() {
     const navigate = useNavigate();
 
     const { setItem: setToken } = useLocalStorage('jwtToken');
+    const user = useContext(UserContext);
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -28,6 +30,7 @@ export default function LogInForm() {
     const logInMutation = useMutation(logIn, {
         onSuccess: (data: AxiosResponse<AuthenticationResponse>) => {
             setToken(data.data.token);
+            user.dispatch({ type: 'LogIn' });
             navigate('/');
         },
         onError: () => {
