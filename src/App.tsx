@@ -1,8 +1,9 @@
 import './App.css';
 import ResponsiveAppBar from './components/ResponsiveAppBar/ResponsiveAppBar';
 import CompanyListFilter from './pages/CompanyListFilter/CompanyListFilter';
+import CompanyView from './pages/CompanyView/CompanyView';
 import LogInForm from './pages/LogInForm/LogInForm';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                         element={<CompanyListFilter />}
                     />
                     <Route path="/login" element={<LogInForm />} />
+                    <Route path="/company/:id" element={<CompanyView/>} />
                 </Routes>
             </BrowserRouter>
         </>
