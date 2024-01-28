@@ -1,12 +1,14 @@
 import './App.css';
 import ResponsiveAppBar from './components/ResponsiveAppBar/ResponsiveAppBar';
-import CompanyListFilter from './pages/CompanyListFilter/CompanyListFilter';
+import Home from './pages/Home/Home';
 import LogInForm from './pages/LogInForm/LogInForm';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import UserProfile from './pages/UserProfile/UserProfile';
-import { User, UserRole } from './model/user';
+import { User } from './model/user';
 import { Dispatch, createContext, useReducer } from 'react';
 import { getUser } from './services/authorizationService';
+import ScheduledAppointments from './pages/ScheduledAppointments/ScheduledAppointments';
+import CompanyList from './components/CompanyList/CompanyList';
 
 type UserContextType = {
     user: User,
@@ -42,10 +44,12 @@ function App() {
                     <Routes>
                         <Route
                             path="/"
-                            element={<CompanyListFilter />}
+                            element={<Home />}
                         />
                         <Route path="/login" element={<LogInForm />} />
                         <Route path="/profile" element={<UserProfile />} />
+                        <Route path="/company-list" element={<CompanyList />} />
+                        <Route path="/scheduled-appointments" element={<ScheduledAppointments />} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

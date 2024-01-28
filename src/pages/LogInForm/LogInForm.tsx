@@ -16,7 +16,7 @@ export default function LogInForm() {
     const navigate = useNavigate();
 
     const { setItem: setToken } = useLocalStorage('jwtToken');
-    const user = useContext(UserContext);
+    const userContext = useContext(UserContext);
 
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -30,8 +30,8 @@ export default function LogInForm() {
     const logInMutation = useMutation(logIn, {
         onSuccess: (data: AxiosResponse<AuthenticationResponse>) => {
             setToken(data.data.token);
-            user.dispatch({ type: 'LogIn' });
-            navigate('/');
+            userContext.dispatch({ type: 'LogIn' });
+            navigate('/')
         },
         onError: () => {
             setAreCredentialsInvalid(true);
