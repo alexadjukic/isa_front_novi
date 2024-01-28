@@ -6,8 +6,8 @@ import {
     Input,
     Button,
 } from '@mui/material';
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
     getUserDetailsById,
     updateUserDetails,
@@ -35,10 +35,12 @@ export default function UserProfile() {
     });
     const [address, setAddress] = useState<string>('');
     const userContext = useContext(UserContext);
+    const queryClient = useQueryClient();
 
     const userMutation = useMutation(updateUserDetails, {
         onSuccess: (data: AxiosResponse<UserDetails>) => {
             setUser(data.data);
+            queryClient.invalidateQueries(['users', userContext.user.id]);
         },
     });
 
@@ -65,6 +67,11 @@ export default function UserProfile() {
             enabled: user.addressId !== 0,
         },
     );
+
+    useEffect(() => {
+        if (userQuery.isSuccess)
+            setUser(userQuery.data.data);
+    }, [userQuery.isSuccess]);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

@@ -4,7 +4,7 @@ import CompanyListFilter from './pages/CompanyListFilter/CompanyListFilter';
 import LogInForm from './pages/LogInForm/LogInForm';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import UserProfile from './pages/UserProfile/UserProfile';
-import { User, UserRole } from './model/user';
+import { User } from './model/user';
 import { Dispatch, createContext, useReducer } from 'react';
 import { getUser } from './services/authorizationService';
 
