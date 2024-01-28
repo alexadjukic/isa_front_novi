@@ -239,11 +239,7 @@ export default function CompanyView() {
                                     <Link to={`/editEquipment/${equip.id}`}>
                                         <Button variant="contained" size="small">Edit</Button>
                                     </Link>
-                                    {(equip.appointmentId === null) ? (
-                                        <Button onClick={() => setEquipForDel(equip.id)} variant="contained" size="small">Delete</Button>
-                                    ) : (
-                                        <p></p>
-                                    )}
+                                    <Button onClick={() => setEquipForDel(equip.id)} variant="contained" size="small">Delete</Button>
                                 </CardActions>
                                 ) : (
                                     <p></p>
@@ -289,11 +285,12 @@ export default function CompanyView() {
                                 </CardContent>
                                 {userDetails?.role.toString() === 'USER' ? (
                                     <CardActions>
-                                        {/* {appointment.isReserved === false ? (
-                                            <Button onClick={() => this.reserveAppointment(appointment)} variant="contained" size="small" disabled={props.selectedEquipment.length === 0}>Reserve</Button>
+                                        {appointment.isReserved === false ? (
+                                            // <Button onClick={() => this.reserveAppointment(appointment)} variant="contained" size="small" disabled={props.selectedEquipment.length === 0}>Reserve</Button>
+                                            <Button variant="contained" size="small" >Reserve</Button>
                                         ) : (
                                             <p className="already-reserved-p">Someone already reserved.</p>
-                                        )} */}
+                                        )}
                                     </CardActions>
                                 ) : (
                                     <p></p>
