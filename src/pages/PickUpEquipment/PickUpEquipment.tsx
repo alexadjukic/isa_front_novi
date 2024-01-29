@@ -55,7 +55,7 @@ export default function PickUpEquipment() {
         appointmentPickedupMutation.mutate(id);
     };
 
-    const penaliseUserAfterExpiredReservationClick = (id: number, uid: number) => {
+    const penaliseUserAfterExpiredReservationClick = (uid: number, id: number) => {
         appointmentPenalisedMutation.mutate({
             userId: uid,
             appointmentId: id,
