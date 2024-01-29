@@ -1,4 +1,4 @@
-import { Button, Input, MenuItem, FormControl, InputLabel, Select, SelectChangeEvent, TextField, Stack, Typography } from "@mui/material";
+import { Button, Input, MenuItem, FormControl, InputLabel, Select, SelectChangeEvent } from "@mui/material";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { Appointment, AppointmentStatus } from "../../model/appointment";
 import { UserContext } from "../../App";
@@ -22,7 +22,7 @@ export default function AppointmentForm() {
         duration: 0,
         status: AppointmentStatus.NEW,
         companyId: 0,
-        isReserved: false,
+        reserved: false,
         userId: undefined,
         adminId: 0,
         equipmentList: []

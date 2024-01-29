@@ -6,7 +6,7 @@ export type Appointment = {
     duration: number;
     status: AppointmentStatus;
     companyId: number;
-    isReserved: boolean;
+    reserved: boolean;
     userId?: number;
     adminId: number;
     equipmentList: Equipment[]

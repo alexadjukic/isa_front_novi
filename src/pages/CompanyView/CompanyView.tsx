@@ -12,12 +12,13 @@ import { Company } from '../../model/company';
 import { getCompanyById } from '../../services/companyService';
 import { Link, useParams } from 'react-router-dom';
 import { Equipment } from '../../model/equipment';
-import { deleteEquipmentById, getAllEquipmentByCompanyId } from '../../services/equipmentService';
+import { addEquipmentToAppointment, deleteEquipmentById, getAllEquipmentByCompanyId } from '../../services/equipmentService';
 import { Appointment } from '../../model/appointment';
-import { getAppointmentsByCompanyId } from '../../services/appointmentService';
+import { getAppointmentsByCompanyId, updateAppointment } from '../../services/appointmentService';
 import { format } from 'date-fns';
 import { Address } from '../../model/address';
 import { getAddressById } from '../../services/addressService';
+import { UserContext } from '../../App';
 
 export default function CompanyView() {
     // const navigate = useNavigate();
@@ -30,6 +31,8 @@ export default function CompanyView() {
     const [appointments, setAppointments] = useState<Appointment[]>();
     const [address, setAddress] = useState<Address>({id: 0, country: '', city: '', street: '', streetNumber: 0, latitude: 0.0, longitude: 0.0});
     const [equipForDelId, setEquipForDelId] = useState<number>(0);
+    const [selectedEquipment, setSelectedEquipment] = useState<Equipment[]>([]);
+
     const params = useParams();
 
     const getLoggedUser = useQuery(
@@ -114,12 +117,43 @@ export default function CompanyView() {
         // getLoggedUser.refetch();
     },[user, userDetails, equipForDelId, company, getLoggedUser])
     
+    function selectEquipment(eq: Equipment): void {
+        setSelectedEquipment([...selectedEquipment, eq]);
+    }
+
+    const appointmentMutation = useMutation(updateAppointment, {
+        onSuccess: () => {
+            getAppointments.refetch();
+        },
+    });
+
+    const addEqMutation = useMutation(addEquipmentToAppointment, {
+        onSuccess: () => {
+            getAppointments.refetch();
+        }
+    })
+
+    function reserveAppointment(ap: Appointment): void {
+        ap.userId = user.id;
+        ap.reserved = true;
+        ap.equipmentList = selectedEquipment;
+        if (userDetails.penaltyPoints >= 3) {
+            alert('You cannot make an appointment because you have more than 2 penalty points');
+            return;
+        }
+        appointmentMutation.mutate(ap);
+        ap.equipmentList.forEach(e => {
+            e.appointmentId = ap.id;
+            addEqMutation.mutate(e);
+        })
+    }
+
+
     return (
         <div className={`${classes.container}`}>
             <Grid container spacing={2} className={`${classes.gridContainer}`}>
                 <Grid item xs={12} sm={3} className={`${classes.gridItem1}`}>
                     <p className={`${classes.companyDescription}`}>{company.description}</p>
-                    <p>{administrators?.length}</p>
                     {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                         <Link to={`/editCompanyAdminProfile/${userDetails.id}`}>
                             <Button className={`${classes.editCompanyButton}`} size="large" variant="contained">
@@ -239,9 +273,13 @@ export default function CompanyView() {
                                 ) : (
                                     <p></p>
                                 )}
-                                {userDetails.role.toString() === 'USER' ? (
-                                    <CardActions> 
-                                        {/* <Button onClick={() => this.selectEquipment(equip)} variant="contained" size="small" disabled={equip.appointmentId !== null}>{equip.appointmentId !== null ? 'Selected' : 'Select'}</Button> */}
+                                {userDetails?.role.toString() === 'USER' ? (
+                                    <CardActions>
+                                        {equip.appointmentId !== null ? (
+                                            <Typography variant="body2" color="textSecondary">Already reserved</Typography>
+                                        ) : (
+                                            <Button onClick={() => selectEquipment(equip)} variant="contained" size="small" disabled={selectedEquipment.some(eq => eq.id == equip.id)}>{selectedEquipment.some(eq => eq.id == equip.id) ? 'Selected' : 'Select'}</Button>
+                                            )} 
                                     </CardActions>
                                 ) : (
                                     <p></p>
@@ -280,9 +318,8 @@ export default function CompanyView() {
                                 </CardContent>
                                 {userDetails.role.toString() === 'USER' ? (
                                     <CardActions>
-                                        {appointment.isReserved === false ? (
-                                            // <Button onClick={() => this.reserveAppointment(appointment)} variant="contained" size="small" disabled={props.selectedEquipment.length === 0}>Reserve</Button>
-                                            <Button variant="contained" size="small" >Reserve</Button>
+                                        {appointment.reserved === false ? (
+                                            <Button onClick={() => reserveAppointment(appointment)} variant="contained" size="small" disabled={selectedEquipment.length === 0}>Reserve</Button>
                                         ) : (
                                             <p className="already-reserved-p">Someone already reserved.</p>
                                         )}

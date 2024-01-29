@@ -12,6 +12,10 @@ export function getAllEquipmentByCompanyId(companyId: number){
     }
 }
 
+export function addEquipmentToAppointment(eq: Equipment): Promise<AxiosResponse<Equipment>> {
+    return api.put<Equipment>(`equipment/addToAppointment`, eq);
+}
+
 export async function deleteEquipmentById(id: number): Promise<void>{
     await api.delete('equipment/' + id);
 }
