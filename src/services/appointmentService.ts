@@ -24,3 +24,7 @@ export function updateAppointment(appointment: Appointment): Promise<AxiosRespon
 export function cancelAppointment({ appointmentId, userId }: { appointmentId: number, userId: number }): Promise<AxiosResponse<string>> {
     return api.delete(`appointments/${appointmentId}/${userId}`);
 }
+
+export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> {
+    return api.post(`appointments/decodeQR`, qrCode);
+}
