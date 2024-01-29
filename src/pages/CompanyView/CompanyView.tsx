@@ -18,7 +18,6 @@ import { getAppointmentsByCompanyId, updateAppointment } from '../../services/ap
 import { format } from 'date-fns';
 import { Address } from '../../model/address';
 import { getAddressById } from '../../services/addressService';
-import { UserContext } from '../../App';
 
 export default function CompanyView() {
     // const navigate = useNavigate();
@@ -265,7 +264,7 @@ export default function CompanyView() {
                                 </CardContent>
                                 {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                                 <CardActions>
-                                    <Link to={`/editEquipment/${equip.id}`}>
+                                    <Link to={`/edit-equipment/${equip.id}`}>
                                         <Button variant="contained" size="small">Edit</Button>
                                     </Link>
                                     <Button onClick={() => setEquipForDel(equip.id)} variant="contained" size="small">Delete</Button>

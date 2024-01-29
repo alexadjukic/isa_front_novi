@@ -13,7 +13,7 @@ import CompanyView from './pages/CompanyView/CompanyView';
 import EquipmentForm from './pages/EquipmentForm/EquipmentForm';
 import QRCodes from './pages/QRCodes/QRCodes';
 import PickUpEquipment from './pages/PickUpEquipment/PickUpEquipment';
-import CompanyAdminHomePage from './pages/CompanyAdminHomePage/CompanyAdminHomePage';
+import CompanyAdminHomePage from './pages/Home/CompanyAdminHomePage/CompanyAdminHomePage';
 import AppointmentForm from './pages/AppointmentForm/AppointmentForm';
 import CustomerList from './pages/CustomerList/CustomerList';
 
@@ -58,9 +58,9 @@ function App() {
                         <Route path="/company-list" element={<CompanyList />} />
                         <Route path="/scheduled-appointments" element={<ScheduledAppointments />} />
                         <Route path="/company/:id" element={<CompanyView/>} />
-                        <Route path="/editEquipment/:id" element={<EquipmentForm/>} />
+                        <Route path="/edit-equipment/:id" element={<EquipmentForm/>} />
                         <Route path="/qr-codes" element={<QRCodes/>} />
-                        <Route path="/pickUpEquipment" element={<PickUpEquipment />} />
+                        <Route path="/pick-up-equipment" element={<PickUpEquipment />} />
                         <Route path="/company-admin-home-page" element={<CompanyAdminHomePage/>} />
                         <Route path="/create-appointment" element={<AppointmentForm/>} />
                         <Route path="/customer-list/:companyId" element={<CustomerList/>} />
