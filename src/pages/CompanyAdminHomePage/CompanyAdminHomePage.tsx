@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import classes from "./CompanyAdminHomePage.module.css"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
 import { UserDetails, UserRole } from "../../model/user";
 import { getUserDetailsById } from "../../services/userService";
@@ -37,6 +37,12 @@ export default function CompanyAdminHomePage(){
         },
     );
 
+    
+    useEffect(() => {
+        if(user.id === 0){
+            userQuery.refetch()
+        }
+    }, [user]);
 
     return(
         <div style={{display: 'flex', }}>
@@ -49,6 +55,7 @@ export default function CompanyAdminHomePage(){
                 <Link to={`/create-appointment`} className={`${classes.link}`} >Create Appointment</Link>
                 <Link to={`/customer-list/${user.companyId}`} className={`${classes.link}`} >Customer List</Link>
                 <Link to={`/profile`} className={`${classes.link}`} >My Profile</Link>
+                <Link to={`/company/${user.companyId}`} className={`${classes.link}`} >My Company</Link>
             </div>
         </div>
         
