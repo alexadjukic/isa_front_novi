@@ -16,6 +16,7 @@ import PickUpEquipment from './pages/PickUpEquipment/PickUpEquipment';
 import CompanyAdminHomePage from './pages/CompanyAdminHomePage/CompanyAdminHomePage';
 import AppointmentForm from './pages/AppointmentForm/AppointmentForm';
 import CustomerList from './pages/CustomerList/CustomerList';
+import CompanyFullCalendar from './pages/CompanyFullCalendar/CompanyFullCalendar';
 
 type UserContextType = {
     user: User,
@@ -64,6 +65,7 @@ function App() {
                         <Route path="/company-admin-home-page" element={<CompanyAdminHomePage/>} />
                         <Route path="/create-appointment" element={<AppointmentForm/>} />
                         <Route path="/customer-list/:companyId" element={<CustomerList/>} />
+                        <Route path="/company-full-calendar" element={<CompanyFullCalendar />} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

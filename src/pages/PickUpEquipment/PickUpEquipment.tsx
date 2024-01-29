@@ -52,15 +52,20 @@ export default function PickUpEquipment() {
     },[user, userDetails, getLoggedUser])
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
-
-        if (file) {
-            // You can save the file object or its data (e.g., base64) to the state
-            setSelectedImage(file);
+        if (event.target.files !== null)
+        {
+            const file = event.target.files[0];
+            console.log(event.target.files[0]);
+    
+            if (file) {
+                // You can save the file object or its data (e.g., base64) to the state
+                setSelectedImage(file);
+            }
+    
+            if (qrDataQuery.isSuccess)
+            setQRData(qrDataQuery.data.data);
         }
-
-        if (qrDataQuery.isSuccess)
-        setQRData(qrDataQuery.data.data);
+        
     };
 
     return (<div>

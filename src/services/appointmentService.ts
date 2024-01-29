@@ -26,7 +26,15 @@ export function cancelAppointment({ appointmentId, userId }: { appointmentId: nu
 }
 
 export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> {
-    return api.post(`appointments/decodeQR`, qrCode);
+    const formData = new FormData();
+    formData.append("file", qrCode);
+    console.log(formData);
+    console.log(qrCode);
+    return api.post<string>(`appointments/decodeQR`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
 
 export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
