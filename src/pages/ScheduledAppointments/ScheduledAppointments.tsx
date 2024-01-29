@@ -58,7 +58,7 @@ export default function ScheduledAppointments() {
                     <ul>
                         {appointment.equipmentList.map((item, index) => (
                             <li key={index}>
-                                {item.name} --- Price: {item.price}RSD
+                                {item.name} - Price: {item.price}$
                             </li>
                         ))}
                     </ul>

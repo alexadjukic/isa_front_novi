@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
 import CompanyList from '../../components/CompanyList/CompanyList';
+import classes from './Home.module.css';
 
 export default function Home() {
     const userContext = useContext(UserContext);
@@ -11,15 +11,26 @@ export default function Home() {
         return (
             <>
                 <div>
-                    <Link to={`/company-list`}>Company list</Link>
-                    <br></br>
-                    <Link to={`/scheduled-appointments`}>
-                        Scheduled appointments
-                    </Link>
-                    <br></br>
-                    <Link to={`/qr-codes`}>QR code confirmations</Link>
-                    <br></br>
-                    <Link to={`/profile`}>My profile</Link>
+                    <div className={`${classes.card}`}>
+                        <a href="/company-list" className={`${classes.link}`}>
+                            Company list
+                        </a>
+                    </div>
+                    <div className={`${classes.card}`}>
+                        <a href="/scheduled-appointments" className={`${classes.link}`}>
+                            Scheduled appointments
+                        </a>
+                    </div>
+                    <div className={`${classes.card}`}>
+                        <a href="/qr-codes" className={`${classes.link}`}>
+                            QR code confirmations
+                        </a>
+                    </div>
+                    <div className={`${classes.card}`}>
+                        <a href="/profile" className={`${classes.link}`}>
+                            My profile
+                        </a>
+                    </div>
                 </div>
             </>
         );
