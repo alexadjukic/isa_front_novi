@@ -32,3 +32,11 @@ export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> 
 export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
     return api.post<Appointment>(`appointments/createWithoutMail`, appointment)
 }
+
+export function getAvailableAppointments({ date, companyId }: { date: string, companyId: number }): Promise<AxiosResponse<Appointment[]>> {
+    return api.get<Appointment[]>(`appointments/getAvailable/` + companyId, { params: { date }}) ;
+}
+
+export function createEmergencyAppointment(newAppointment: Appointment): Promise<AxiosResponse<Appointment>> {
+    return api.post<Appointment>(`appointments`, newAppointment)
+}

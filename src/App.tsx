@@ -16,6 +16,8 @@ import PickUpEquipment from './pages/PickUpEquipment/PickUpEquipment';
 import CompanyAdminHomePage from './pages/CompanyAdminHomePage/CompanyAdminHomePage';
 import AppointmentForm from './pages/AppointmentForm/AppointmentForm';
 import CustomerList from './pages/CustomerList/CustomerList';
+import PickupHistory from './pages/PickupHistory/PickupHistory';
+import CreateEmergencyAppointment from './pages/CreateEmergencyAppointment/CreateEmergencyAppointment';
 
 type UserContextType = {
     user: User,
@@ -64,6 +66,8 @@ function App() {
                         <Route path="/company-admin-home-page" element={<CompanyAdminHomePage/>} />
                         <Route path="/create-appointment" element={<AppointmentForm/>} />
                         <Route path="/customer-list/:companyId" element={<CustomerList/>} />
+                        <Route path="/pickup-history" element={<PickupHistory/>} />
+                        <Route path="/company/:companyId/emergencyAppointment" element={<CreateEmergencyAppointment/>} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>
