@@ -20,3 +20,7 @@ export function getAppointmentsByUserId(userId: number): Promise<AxiosResponse<A
 export function cancelAppointment({ appointmentId, userId }: { appointmentId: number, userId: number }): Promise<AxiosResponse<string>> {
     return api.delete(`appointments/${appointmentId}/${userId}`);
 }
+
+export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
+    return api.post<Appointment>(`appointments/createWithoutMail`, appointment)
+}

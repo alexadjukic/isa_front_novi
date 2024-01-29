@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
 import CompanyList from '../../components/CompanyList/CompanyList';
+import CompanyAdminHomePage from '../CompanyAdminHomePage/CompanyAdminHomePage';
 
 export default function Home() {
     const userContext = useContext(UserContext);
@@ -23,5 +24,8 @@ export default function Home() {
                 </div>
             </>
         );
+    else if(userContext.user.role == UserRole.COMPANY_ADMIN){
+        return <CompanyAdminHomePage />;
+    }
     else return <CompanyList />;
 }

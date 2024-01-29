@@ -254,7 +254,7 @@ export default function CompanyView() {
                         {/* Sadržaj za drugu polovinu grida */}
                         <h1>Appointments:</h1>
                         {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
-                            <Link to={`/createAppointment/${company.id}`}>
+                            <Link to={`/create-appointment`}>
                                 <Button variant="contained" size="small">Create Appointment</Button>
                             </Link>
                         ) : (
