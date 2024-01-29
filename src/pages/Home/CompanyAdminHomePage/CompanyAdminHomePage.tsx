@@ -51,7 +51,7 @@ export default function CompanyAdminHomePage(){
             </div> */}
             <div className={`${classes.tabsContainer}`}>
                 <Link to={`/pick-up-equipment`} className={`${classes.link}`} >Pickup Information</Link>
-                <Link to={`/calendar`} className={`${classes.link}`} >Calendar</Link>
+                <Link to={`/company-full-calendar`} className={`${classes.link}`} >Calendar</Link>
                 <Link to={`/create-appointment`} className={`${classes.link}`} >Create Appointment</Link>
                 <Link to={`/customer-list/${user.companyId}`} className={`${classes.link}`} >Customer List</Link>
                 <Link to={`/profile`} className={`${classes.link}`} >My Profile</Link>
