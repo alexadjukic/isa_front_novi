@@ -26,7 +26,15 @@ export function cancelAppointment({ appointmentId, userId }: { appointmentId: nu
 }
 
 export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> {
-    return api.post(`appointments/decodeQR`, qrCode);
+    const formData = new FormData();
+    formData.append("file", qrCode);
+    console.log(formData);
+    console.log(qrCode);
+    return api.post<string>(`appointments/decodeQR`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 }
 
 export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
@@ -39,4 +47,16 @@ export function getAvailableAppointments({ date, companyId }: { date: string, co
 
 export function createEmergencyAppointment(newAppointment: Appointment): Promise<AxiosResponse<Appointment>> {
     return api.post<Appointment>(`appointments`, newAppointment)
+}
+
+export function getAppointmentsByAdminId(adminId: number): Promise<AxiosResponse<Appointment[]>> {
+    return api.get<Appointment[]>(`appointments/byAdminId/` + adminId);
+}
+
+export function pickUpEquipment(appointmentId: number): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/pickup/${appointmentId}`);
+}
+
+export function penaliseUser({userId, appointmentId} : {userId: number, appointmentId: number}): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/penaliseAfterReservation/${userId}/${appointmentId}`)
 }

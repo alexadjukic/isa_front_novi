@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
 import CompanyList from '../../components/CompanyList/CompanyList';
+import CompanyAdminHomePage from './CompanyAdminHomePage/CompanyAdminHomePage';
 import classes from './Home.module.css';
-import CompanyAdminHomePage from '../CompanyAdminHomePage/CompanyAdminHomePage';
 import { Link } from 'react-router-dom';
 
 export default function Home() {

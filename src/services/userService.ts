@@ -20,3 +20,7 @@ export function getUserByUsername(username: string): Promise<AxiosResponse<UserD
 export function getUsersThatReservedAppointment(companyId: number): Promise<AxiosResponse<UserDetails[]>> {
     return api.get<UserDetails[]>(`users/getUsersThatReservedAppointment/` + companyId);
 }
+
+export function getAllUsers(): Promise<AxiosResponse<UserDetails[]>> {
+    return api.get<UserDetails[]>(`users/allUsers`);
+}

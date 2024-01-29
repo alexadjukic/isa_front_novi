@@ -2,18 +2,21 @@ import { Equipment } from "./equipment";
 
 export type Appointment = {
     id: number;
-    dateTime: Date
+    dateTime: Date;
     duration: number;
     status: AppointmentStatus;
     companyId: number;
     reserved: boolean;
     userId?: number;
     adminId: number;
-    equipmentList: Equipment[]
+    pickUpDateTime?: Date;
+    equipmentList: Equipment[];
 }
 
 export enum AppointmentStatus {
     NEW,
     PROCESSED,
-    DENIED
+    DENIED,
+    PICKEDUP,
+    PENALISED
 }
