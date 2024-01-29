@@ -31,6 +31,7 @@ export default function ScheduledAppointments() {
                 'appointments',
                 userContext.user.id,
             ]);
+            queryClient.invalidateQueries(['users', userContext.user.id]);
         },
     });
 

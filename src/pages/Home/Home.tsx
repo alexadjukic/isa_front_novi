@@ -3,6 +3,7 @@ import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
 import CompanyList from '../../components/CompanyList/CompanyList';
 import classes from './Home.module.css';
+import CompanyAdminHomePage from '../CompanyAdminHomePage/CompanyAdminHomePage';
 
 export default function Home() {
     const userContext = useContext(UserContext);
@@ -34,5 +35,8 @@ export default function Home() {
                 </div>
             </>
         );
+    else if(userContext.user.role == UserRole.COMPANY_ADMIN){
+        return <CompanyAdminHomePage />;
+    }
     else return <CompanyList />;
 }
