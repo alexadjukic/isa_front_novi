@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, useEffect } from "react";
-import { useQuery } from "react-query";
-import { getAppointmentsByAdminId, getDataFromQRCode } from "../../services/appointmentService";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { getAppointmentsByAdminId, getDataFromQRCode, penaliseUser, pickUpEquipment } from "../../services/appointmentService";
 import { AxiosResponse } from "axios";
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { User, UserDetails, UserRole } from '../../model/user';
@@ -20,6 +20,7 @@ export default function PickUpEquipment() {
     const [ userDetails, setUserDetails ] = useState<UserDetails>({id: 0, username: '', role: UserRole.UNAUTHENTICATED, email: '', password: '', firstName: '', lastName: '', addressId: 0, phoneNumber: '', profession: '', companyId: 0, penaltyPoints: 0});
     const [ appointments, setAppointments ] = useState<Appointment[]>([]);
     const [usersMap, setUsersMap] = useState<{ [key: number]: string }>({});
+    const queryClient = useQueryClient();
 
     const allUsersQuery = useQuery(
         ['users/allusers'],
@@ -35,6 +36,31 @@ export default function PickUpEquipment() {
             }
         }
     );
+        
+    const appointmentPickedupMutation = useMutation(pickUpEquipment, {
+        onSuccess: () => {
+            // setEquipment(data.data);
+            queryClient.invalidateQueries(['appointments/byAdminId', userDetails.id]);
+        },
+    });
+
+    const appointmentPenalisedMutation = useMutation(penaliseUser, {
+        onSuccess: () => {
+            // setEquipment(data.data);
+            queryClient.invalidateQueries(['appointments/byAdminId', userDetails.id]);
+        },
+    });
+    
+    const markAsPickedUpClick = (id: number) => {
+        appointmentPickedupMutation.mutate(id);
+    };
+
+    const penaliseUserAfterExpiredReservationClick = (id: number, uid: number) => {
+        appointmentPenalisedMutation.mutate({
+            userId: uid,
+            appointmentId: id,
+        });
+    };
 
     const getAppointmentsQuery = useQuery(
         ['appointments/byAdminId', userDetails.id],
@@ -96,6 +122,49 @@ export default function PickUpEquipment() {
         
     };
 
+    function shouldPickup(appointmentDateTime: Date, duration: number): boolean{
+        
+        const Date1 = new Date(appointmentDateTime);
+        const year = Date1.getFullYear()
+        const month = Date1.getMonth()
+        const day = Date1.getDay()
+        const hour = Date1.getHours()
+        const minute = Date1.getMinutes()
+
+        const start1 = { hours: hour, minutes: minute };
+        const end1 = getEndTime(hour, minute, duration);
+
+
+        const currentDateTime = new Date();
+        const tempYear = currentDateTime.getFullYear()
+        const tempMonth = currentDateTime.getMonth()
+        const tempDay = currentDateTime.getDay()
+        const tempHours = currentDateTime.getHours()
+        const tempMinutes = currentDateTime.getMinutes()
+
+        const currTime = { hours: tempHours,  minutes: tempMinutes }
+
+        if(year === tempYear && month === tempMonth && day === tempDay){
+            if(start1.hours * 60 + start1.minutes <= currTime.hours * 60 + currTime.minutes && end1.hours * 60 + end1.minutes >= currTime.hours * 60 + currTime.minutes){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    interface Time {
+        hours: number;
+        minutes: number;
+    }
+
+    function getEndTime(hour: number, minute: number, duration: number): Time{
+        const totalMinutes = hour * 60 + minute + duration;
+        const endHour = Math.floor(totalMinutes / 60);
+        const endMinute = totalMinutes % 60;
+        return { hours: endHour, minutes: endMinute };
+    }
+
     return (
         <div>
             <p>Pick up equipment</p>
@@ -151,17 +220,28 @@ export default function PickUpEquipment() {
                             </Typography>
                             
                         </CardContent>
-                        {/* {userDetails.role.toString() === 'USER' ? (
-                            <CardActions>
-                                {appointment.reserved === false ? (
-                                    <Button onClick={() => reserveAppointment(appointment)} variant="contained" size="small" disabled={selectedEquipment.length === 0}>Reserve</Button>
+                        {(appointment.status.toString() !== 'PENALISED' && appointment.status.toString() !== 'PICKEDUP') ? (
+                            <div>
+                                {shouldPickup(appointment.dateTime, appointment.duration) ? (
+                                    // <CardActions>
+                                    //     <Button  variant="contained" size="small">Mark as picked up</Button>
+                                    // </CardActions>
+                                    <div>
+                                        User came in time, you can mark his reservation as picked up.
+                                        <br />
+                                        <Button onClick={() => markAsPickedUpClick(appointment.id)} variant="contained" size="small">Mark as picked up</Button>
+                                    </div>
                                 ) : (
-                                    <p className="already-reserved-p">Someone already reserved.</p>
+                                    <div>
+                                        Reservation has expired. You can penalise this user.
+                                        <br />
+                                        <Button onClick={() => penaliseUserAfterExpiredReservationClick(appointment.userId!, appointment.id)} variant="contained" size="small">Penalise</Button>
+                                    </div>
                                 )}
-                            </CardActions>
+                            </div>
                         ) : (
                             <p></p>
-                        )} */}
+                        )}
                     </Card>
                 ))}
             </div>

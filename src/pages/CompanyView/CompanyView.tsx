@@ -44,7 +44,7 @@ export default function CompanyView() {
             enabled: user ? true : false
         }
     );
-        
+
     const getCompanyByUser = useQuery(
         ['companies', params.id],
         () => getCompanyById(params.id),

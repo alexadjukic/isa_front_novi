@@ -44,3 +44,11 @@ export function createAppointment(appointment: Appointment): Promise<AxiosRespon
 export function getAppointmentsByAdminId(adminId: number): Promise<AxiosResponse<Appointment[]>> {
     return api.get<Appointment[]>(`appointments/byAdminId/` + adminId);
 }
+
+export function pickUpEquipment(appointmentId: number): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/pickup/${appointmentId}`);
+}
+
+export function penaliseUser({userId, appointmentId} : {userId: number, appointmentId: number}): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/penaliseAfterReservation/${userId}/${appointmentId}`)
+}
