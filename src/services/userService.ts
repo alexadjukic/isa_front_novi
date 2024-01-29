@@ -12,3 +12,11 @@ export function updateUserDetails(
 export function getUserDetailsById(userId: number): Promise<AxiosResponse<UserDetails>> {
     return api.get(`users/${userId}`);
 }
+
+export function getUserByUsername(username: string): Promise<AxiosResponse<UserDetails>> {
+    return api.get<UserDetails>(`users/getByUsername/` + username);
+}
+
+export function getUsersThatReservedAppointment(companyId: number): Promise<AxiosResponse<UserDetails[]>> {
+    return api.get<UserDetails[]>(`users/getUsersThatReservedAppointment/` + companyId);
+}

@@ -28,3 +28,7 @@ export function cancelAppointment({ appointmentId, userId }: { appointmentId: nu
 export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> {
     return api.post(`appointments/decodeQR`, qrCode);
 }
+
+export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
+    return api.post<Appointment>(`appointments/createWithoutMail`, appointment)
+}
