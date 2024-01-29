@@ -40,3 +40,19 @@ export function getDataFromQRCode(qrCode: File): Promise<AxiosResponse<string>> 
 export function createAppointment(appointment: Appointment): Promise<AxiosResponse<Appointment>> {
     return api.post<Appointment>(`appointments/createWithoutMail`, appointment)
 }
+
+export function getDataFromQRCodeSecond(qrData: String): Promise<AxiosResponse<String>> {
+    return api.put(`appointments/checkIfAppointmentValid`, qrData);
+}
+
+export function finishPickUpAppointment(qrCode: File): Promise<AxiosResponse<String>> {
+    const formData = new FormData();
+    formData.append("file", qrCode);
+    console.log(formData);
+    console.log(qrCode);
+    return api.post<string>(`appointments/doPickUpEquipment`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
