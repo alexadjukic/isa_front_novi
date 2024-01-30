@@ -220,7 +220,7 @@ export default function PickUpEquipment() {
                 <div>
                     <p>Selected Image:</p>
                     <img src={URL.createObjectURL(selectedImage)} alt="Selected" />
-                    {qrData !== 'penalized' && qrData !== '' && <button onClick={() => pickUpClick(selectedImage)}>Pick up done</button>}
+                    {qrData !== 'penalized' && qrData !== '' && qrData !== 'early' && <button onClick={() => pickUpClick(selectedImage)}>Pick up done</button>}
                 </div>
             )}
             {qrData && (
