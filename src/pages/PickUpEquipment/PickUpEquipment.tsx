@@ -122,7 +122,7 @@ export default function PickUpEquipment() {
         
     };
 
-    function shouldPickup(appointmentDateTime: Date, duration: number): boolean{
+    function shouldPickup(appointmentDateTime: Date, duration: number): number{
         
         const Date1 = new Date(appointmentDateTime);
         const year = Date1.getFullYear()
@@ -146,11 +146,14 @@ export default function PickUpEquipment() {
 
         if(year === tempYear && month === tempMonth && day === tempDay){
             if(start1.hours * 60 + start1.minutes <= currTime.hours * 60 + currTime.minutes && end1.hours * 60 + end1.minutes >= currTime.hours * 60 + currTime.minutes){
-                return true;
+                return 0;
+            }else if(start1.hours * 60 + start1.minutes >= currTime.hours * 60 + currTime.minutes){
+                return 1
             }
+        }else if(year > tempYear || (year === tempYear && month > tempMonth) || (year === tempYear && month === tempMonth && day > tempDay)){
+            return 1
         }
-
-        return false;
+        return 2;
     }
 
     interface Time {
@@ -222,21 +225,20 @@ export default function PickUpEquipment() {
                         </CardContent>
                         {(appointment.status.toString() !== 'PENALISED' && appointment.status.toString() !== 'PICKEDUP') ? (
                             <div>
-                                {shouldPickup(appointment.dateTime, appointment.duration) ? (
-                                    // <CardActions>
-                                    //     <Button  variant="contained" size="small">Mark as picked up</Button>
-                                    // </CardActions>
+                                {shouldPickup(appointment.dateTime, appointment.duration) === 0 ? (
                                     <div>
                                         User came in time, you can mark his reservation as picked up.
                                         <br />
                                         <Button onClick={() => markAsPickedUpClick(appointment.id)} variant="contained" size="small">Mark as picked up</Button>
                                     </div>
-                                ) : (
+                                ) : shouldPickup(appointment.dateTime, appointment.duration) === 2 ?(
                                     <div>
                                         Reservation has expired. You can penalise this user.
                                         <br />
                                         <Button onClick={() => penaliseUserAfterExpiredReservationClick(appointment.userId!, appointment.id)} variant="contained" size="small">Penalise</Button>
                                     </div>
+                                ) : (
+                                    <p>This reservation date is yet to come.</p>
                                 )}
                             </div>
                         ) : (
