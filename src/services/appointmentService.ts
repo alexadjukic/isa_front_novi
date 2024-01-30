@@ -56,3 +56,23 @@ export function finishPickUpAppointment(qrCode: File): Promise<AxiosResponse<Str
         },
     });
 }
+
+export function getAvailableAppointments({ date, companyId }: { date: string, companyId: number }): Promise<AxiosResponse<Appointment[]>> {
+    return api.get<Appointment[]>(`appointments/getAvailable/` + companyId, { params: { date }}) ;
+}
+
+export function createEmergencyAppointment(newAppointment: Appointment): Promise<AxiosResponse<Appointment>> {
+    return api.post<Appointment>(`appointments`, newAppointment)
+}
+
+export function getAppointmentsByAdminId(adminId: number): Promise<AxiosResponse<Appointment[]>> {
+    return api.get<Appointment[]>(`appointments/byAdminId/` + adminId);
+}
+
+export function pickUpEquipment(appointmentId: number): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/pickup/${appointmentId}`);
+}
+
+export function penaliseUser({userId, appointmentId} : {userId: number, appointmentId: number}): Promise<AxiosResponse<Appointment>> {
+    return api.put<Appointment>(`appointments/penaliseAfterReservation/${userId}/${appointmentId}`);
+}

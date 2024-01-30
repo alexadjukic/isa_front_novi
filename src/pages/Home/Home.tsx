@@ -2,8 +2,9 @@ import { useContext } from 'react';
 import { UserContext } from '../../App';
 import { UserRole } from '../../model/user';
 import CompanyList from '../../components/CompanyList/CompanyList';
+import CompanyAdminHomePage from './CompanyAdminHomePage/CompanyAdminHomePage';
 import classes from './Home.module.css';
-import CompanyAdminHomePage from '../CompanyAdminHomePage/CompanyAdminHomePage';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
     const userContext = useContext(UserContext);
@@ -13,24 +14,29 @@ export default function Home() {
             <>
                 <div>
                     <div className={`${classes.card}`}>
-                        <a href="/company-list" className={`${classes.link}`}>
+                        <Link to="/company-list" className={`${classes.link}`}>
                             Company list
-                        </a>
+                        </Link>
                     </div>
                     <div className={`${classes.card}`}>
-                        <a href="/scheduled-appointments" className={`${classes.link}`}>
+                        <Link to="/pickup-history" className={`${classes.link}`}>
+                            Pickup history
+                        </Link>
+                    </div>
+                    <div className={`${classes.card}`}>
+                        <Link to="/scheduled-appointments" className={`${classes.link}`}>
                             Scheduled appointments
-                        </a>
+                        </Link>
                     </div>
                     <div className={`${classes.card}`}>
-                        <a href="/qr-codes" className={`${classes.link}`}>
+                        <Link to="/qr-codes" className={`${classes.link}`}>
                             QR code confirmations
-                        </a>
+                        </Link>
                     </div>
                     <div className={`${classes.card}`}>
-                        <a href="/profile" className={`${classes.link}`}>
+                        <Link to="/profile" className={`${classes.link}`}>
                             My profile
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </>

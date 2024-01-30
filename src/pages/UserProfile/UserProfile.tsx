@@ -195,20 +195,23 @@ export default function UserProfile() {
                         />
                     </FormControl>
                 </Box>
-
-                <Box className={`${classes.boxContainer}`}>
-                    <FormControl>
-                        <InputLabel htmlFor="profession">Penalty points</InputLabel>
-                        <Input
-                            id="profession"
-                            aria-describedby="my-helper-text"
-                            value={user.penaltyPoints}
-                            onChange={handleInputChange}
-                            required
-                            disabled
-                        />
-                    </FormControl>
-                </Box>
+                {(user.role.toString() === 'USER') ? (
+                    <Box className={`${classes.boxContainer}`}>
+                        <FormControl>
+                            <InputLabel htmlFor="profession">Penalty points</InputLabel>
+                            <Input
+                                id="profession"
+                                aria-describedby="my-helper-text"
+                                value={user.penaltyPoints}
+                                onChange={handleInputChange}
+                                required
+                                disabled
+                            />
+                        </FormControl>
+                    </Box>
+                ) : (
+                    <p></p>
+                )}
                 <Box>
                     <Button type="submit" variant="contained" color="primary">
                         Update user

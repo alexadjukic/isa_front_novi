@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import classes from "./CompanyAdminHomePage.module.css"
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../App";
-import { UserDetails, UserRole } from "../../model/user";
-import { getUserDetailsById } from "../../services/userService";
+import { UserContext } from "../../../App";
+import { UserDetails, UserRole } from "../../../model/user";
+import { getUserDetailsById } from "../../../services/userService";
 import { AxiosResponse } from "axios";
 import { useQuery } from "react-query";
 
@@ -50,8 +50,8 @@ export default function CompanyAdminHomePage(){
                 <UserProfile />
             </div> */}
             <div className={`${classes.tabsContainer}`}>
-                <Link to={`/pickup-infos`} className={`${classes.link}`} >Pickup Information</Link>
-                <Link to={`/calendar`} className={`${classes.link}`} >Calendar</Link>
+                <Link to={`/pick-up-equipment`} className={`${classes.link}`} >Pickup Information</Link>
+                <Link to={`/company-full-calendar`} className={`${classes.link}`} >Calendar</Link>
                 <Link to={`/create-appointment`} className={`${classes.link}`} >Create Appointment</Link>
                 <Link to={`/customer-list/${user.companyId}`} className={`${classes.link}`} >Customer List</Link>
                 <Link to={`/profile`} className={`${classes.link}`} >My Profile</Link>

@@ -13,12 +13,11 @@ import { getCompanyById } from '../../services/companyService';
 import { Link, useParams } from 'react-router-dom';
 import { Equipment } from '../../model/equipment';
 import { addEquipmentToAppointment, deleteEquipmentById, getAllEquipmentByCompanyId } from '../../services/equipmentService';
-import { Appointment } from '../../model/appointment';
+import { Appointment, AppointmentStatus } from '../../model/appointment';
 import { getAppointmentsByCompanyId, updateAppointment } from '../../services/appointmentService';
 import { format } from 'date-fns';
 import { Address } from '../../model/address';
 import { getAddressById } from '../../services/addressService';
-import { UserContext } from '../../App';
 
 export default function CompanyView() {
     // const navigate = useNavigate();
@@ -45,7 +44,7 @@ export default function CompanyView() {
             enabled: user ? true : false
         }
     );
-        
+
     const getCompanyByUser = useQuery(
         ['companies', params.id],
         () => getCompanyById(params.id),
@@ -124,6 +123,8 @@ export default function CompanyView() {
     const appointmentMutation = useMutation(updateAppointment, {
         onSuccess: () => {
             getAppointments.refetch();
+            getEquipment.refetch();
+            setSelectedEquipment([]);
         },
     });
 
@@ -135,6 +136,7 @@ export default function CompanyView() {
 
     function reserveAppointment(ap: Appointment): void {
         ap.userId = user.id;
+        ap.status = AppointmentStatus.PROCESSED;
         ap.reserved = true;
         ap.equipmentList = selectedEquipment;
         if (userDetails.penaltyPoints >= 3) {
@@ -142,10 +144,6 @@ export default function CompanyView() {
             return;
         }
         appointmentMutation.mutate(ap);
-        ap.equipmentList.forEach(e => {
-            e.appointmentId = ap.id;
-            addEqMutation.mutate(e);
-        })
     }
 
 
@@ -184,6 +182,18 @@ export default function CompanyView() {
                     ) : (
                         <p></p>
                     )}
+                    <div className="right-align-container">
+                    {userDetails.role.toString() === 'USER' && selectedEquipment.length != 0 && userDetails.penaltyPoints < 3 ? (
+                    <Link to={`/company/${company.id}/emergencyAppointment`} state={{ selectedEquipment: selectedEquipment }}>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        className="make-em-app-button"
+                        >
+                            Create emergency appointment
+                        </Button>
+                    </Link> ) : (<p></p>)}
+                    </div>
                 </Grid>
             </Grid>
 
@@ -265,7 +275,7 @@ export default function CompanyView() {
                                 </CardContent>
                                 {(userDetails.role.toString() === 'COMPANY_ADMIN' && company.id === userDetails.companyId) ? (
                                 <CardActions>
-                                    <Link to={`/editEquipment/${equip.id}`}>
+                                    <Link to={`/edit-equipment/${equip.id}`}>
                                         <Button variant="contained" size="small">Edit</Button>
                                     </Link>
                                     <Button onClick={() => setEquipForDel(equip.id)} variant="contained" size="small">Delete</Button>
