@@ -154,6 +154,7 @@ export default function PickUpEquipment() {
             setQRData('');
             setSelectedImage(null);
             queryClient.invalidateQueries(['qrData', userContext.user.id]);
+            queryClient.invalidateQueries(['appointments/byAdminId', userDetails.id]);
         }
     })
 
