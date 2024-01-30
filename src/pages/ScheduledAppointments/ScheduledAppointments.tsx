@@ -20,7 +20,8 @@ export default function ScheduledAppointments() {
         () => getAppointmentsByUserId(userContext.user.id),
         {
             onSuccess: (data: AxiosResponse<Appointment[]>) => {
-                setAppointments(data.data);
+                const appointments = data.data.filter(appointment => appointment.status.toString() === 'NEW' || appointment.status.toString() === 'PROCESSED' || appointment.status.toString() === 'DENIED');
+                setAppointments(appointments);
             },
         },
     );

@@ -11,6 +11,7 @@ export type Appointment = {
     adminId: number;
     pickUpDateTime?: Date;
     equipmentList: Equipment[];
+    price?: number;
 }
 
 export enum AppointmentStatus {

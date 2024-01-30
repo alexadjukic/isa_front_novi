@@ -18,7 +18,13 @@ export default function PickupHistory() {
         () => getAppointmentsByUserId(userContext.user.id),
         {
             onSuccess: (data: AxiosResponse<Appointment[]>) => {
-                setAppointments(data.data);
+                let price = 300;
+                const pickedUpAppointments = data.data.filter(appointment => appointment.status.toString() === 'PICKEDUP' || appointment.status.toString() === 'PENALISED');
+                pickedUpAppointments.forEach(element => {
+                    element.price = price;
+                    price += 30;
+                });
+                setAppointments(pickedUpAppointments);
             },
         },
     );
@@ -74,18 +80,11 @@ export default function PickupHistory() {
                     p={2}
                     border={1}
                     borderColor="primary.main">
-                    <Typography variant="h6">{`Date of pickup: ${format(appointment.dateTime, 'dd.MM.yyyy. HH:mm')}`}</Typography>
+                    <Typography variant="h6">{`Date of pickup: ${format(appointment.pickUpDateTime!, 'dd.MM.yyyy. HH:mm')}`}</Typography>
                     <Typography variant="body1">{`Duration: ${appointment.duration}`}</Typography>
                     <Typography variant="body1">{`Status: ${appointment.status}`}</Typography>
+                    <Typography variant="body1">{`Price: ${appointment.price}`}</Typography>
                     {/* Display equipment for this appointment */}
-                    <Typography variant="h6">Equipment:</Typography>
-                    <ul>
-                        {appointment.equipmentList.map((item, index) => (
-                            <li key={index}>
-                                {item.name} - Price: {item.price}$
-                            </li>
-                        ))}
-                    </ul>
                 </Box>
             ))}
         </Box>
