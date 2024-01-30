@@ -1,10 +1,13 @@
-import { useState, ChangeEvent, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { getAppointmentsByAdminId, getDataFromQRCode, penaliseUser, pickUpEquipment } from "../../services/appointmentService";
+import { useState, ChangeEvent, useEffect, useContext } from "react";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "react-query";
+import { finishPickUpAppointment, getDataFromQRCode, getDataFromQRCodeSecond } from "../../services/appointmentService";
+import { getAppointmentsByAdminId,  penaliseUser, pickUpEquipment } from "../../services/appointmentService";
 import { AxiosResponse } from "axios";
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { User, UserDetails, UserRole } from '../../model/user';
 import { getUser, getUserDetails } from '../../services/authorizationService';
+import jsQR from 'jsqr';
+import { UserContext } from "../../App";
 import { Link } from "react-router-dom";
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import { format } from 'date-fns';
@@ -17,10 +20,11 @@ export default function PickUpEquipment() {
     const [qrData, setQRData] = useState<string | null>(null);
     const { getItem: getToken } = useLocalStorage('jwtToken');
     const [ user ] = useState<User>(getUser(getToken()));
+    const queryClient = useQueryClient();
+    const userContext = useContext(UserContext);
     const [ userDetails, setUserDetails ] = useState<UserDetails>({id: 0, username: '', role: UserRole.UNAUTHENTICATED, email: '', password: '', firstName: '', lastName: '', addressId: 0, phoneNumber: '', profession: '', companyId: 0, penaltyPoints: 0});
     const [ appointments, setAppointments ] = useState<Appointment[]>([]);
     const [usersMap, setUsersMap] = useState<{ [key: number]: string }>({});
-    const queryClient = useQueryClient();
 
     const allUsersQuery = useQuery(
         ['users/allusers'],
@@ -90,7 +94,6 @@ export default function PickUpEquipment() {
                 const response = await getDataFromQRCode(selectedImage);
                 return response;
             } else {
-                // Ako selectedImage === null, možete implementirati odgovarajući tretman
                 throw new Error("No selected image");
             }
         },
@@ -106,21 +109,63 @@ export default function PickUpEquipment() {
     },[user, userDetails, getLoggedUser, appointments])
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files !== null)
-        {
+        if (event.target.files !== null) {
             const file = event.target.files[0];
-            console.log(event.target.files[0]);
+            console.log(file);
     
             if (file) {
-                // You can save the file object or its data (e.g., base64) to the state
                 setSelectedImage(file);
+
+                const reader = new FileReader();
+
+                reader.onload = async (e) => {
+                    try {
+                        const img = new Image();
+                        img.src = URL.createObjectURL(file);
+
+                        img.onload = () => {
+                            const width = img.width;
+                            const height = img.height;
+
+                            const binaryData = e.target?.result as ArrayBuffer;
+            
+                            const code = jsQR(new Uint8ClampedArray(binaryData), width, height);
+            
+                            if (code) {
+                              setQRData(code.data);
+                              console.log('Decoded QR Code:', code.data);
+                            } else {
+                              console.log('QR Code not detected or could not be decoded.');
+                            }
+                        };
+                    } catch (error) {
+                        console.error('Error decoding QR code:', error);
+                    }
+                };
+
+                reader.readAsArrayBuffer(file);
             }
-    
-            if (qrDataQuery.isSuccess)
-            setQRData(qrDataQuery.data.data);
         }
-        
     };
+
+    const pickUpMutation = useMutation(finishPickUpAppointment,
+    {
+        onSuccess: () => {
+            setQRData('');
+            setSelectedImage(null);
+            queryClient.invalidateQueries(['qrData', userContext.user.id]);
+            queryClient.invalidateQueries(['appointments/byAdminId', userDetails.id]);
+        }
+    })
+
+    const pickUpClick = (qr: File | null) => {
+        if (qr) {
+            pickUpMutation.mutate(qr);
+        } else {
+            throw new Error("No selected image");
+        }
+    };
+
 
     function shouldPickup(appointmentDateTime: Date, duration: number): number{
         
@@ -180,7 +225,7 @@ export default function PickUpEquipment() {
                 <div>
                     <p>Selected Image:</p>
                     <img src={URL.createObjectURL(selectedImage)} alt="Selected" />
-                    <button>Do pick up</button>
+                    {qrData !== 'penalized' && qrData !== '' && qrData !== 'early' && <button onClick={() => pickUpClick(selectedImage)}>Pick up done</button>}
                 </div>
             )}
             {qrData && (
